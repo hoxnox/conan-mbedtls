@@ -47,4 +47,4 @@ This is a header only library, so nothing needs to be built.
     $ conan upload mbedTLS/2.6.0@bincrafters/stable --all -r bincrafters
 
 ### License
-[Boost](https://github.com/ARMmbed/mbedtls/blob/development/apache-2.0.txt)
+[Apache 2.0](https://github.com/ARMmbed/mbedtls/blob/development/apache-2.0.txt)
