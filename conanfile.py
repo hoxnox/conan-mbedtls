@@ -22,7 +22,7 @@ class MbedTLS(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.definitions["ENABLE_TESTING"] = "Off"
-        cmake.definitions["USE_SHARED_MBEDTLS_LIBRARY"] = "On"
+        cmake.definitions["USE_SHARED_MBEDTLS_LIBRARY"] = self.options.shared
         cmake.configure(source_dir=self.name)
         cmake.build()
 
