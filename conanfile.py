@@ -23,6 +23,9 @@ class MbedTLS(ConanFile):
         #self.cmake.verbose = True
         self.cmake.definitions["ENABLE_TESTING"] = "Off"
 
+		if self.settings.os == "Windows":
+            self.cpp_info.defines.append("MBEDTLS_PLATFORM_C")
+			
         if self.settings.compiler == 'gcc':
             if self.settings.arch == 'x86':
                 self.cmake.definitions["CMAKE_C_FLAGS"] = "-m32"
@@ -51,3 +54,6 @@ class MbedTLS(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
+		
+		if self.settings.os == "Windows":
+            self.cpp_info.defines.append("MBEDTLS_PLATFORM_C")
