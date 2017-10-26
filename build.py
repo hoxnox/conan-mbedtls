@@ -24,5 +24,5 @@ if __name__ == "__main__":
         os.environ["CONAN_REMOTES"]="https://api.bintray.com/conan/{0}/public-conan".format(username)
 
     builder = ConanMultiPackager()
-    builder.add_common_builds()    
+    builder.add_common_builds(shared_option_name="{0}:shared".format(name))
     builder.run()
