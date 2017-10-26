@@ -20,7 +20,7 @@ class MbedTLS(ConanFile):
         
     def build(self):
         self.cmake = CMake(self)
-        #self.cmake.verbose = True
+        self.cmake.verbose = True
         self.cmake.definitions["ENABLE_TESTING"] = "Off"
 
         if self.settings.os == "Windows":
