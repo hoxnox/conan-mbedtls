@@ -48,13 +48,13 @@ class MbedTLS(ConanFile):
             cmake.definitions["CMAKE_C_FLAGS"] = "-DMBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf"
             cmake.definitions["CMAKE_CXX_FLAGS"] = "-DMBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf"
 
-        if self.settings.compiler == 'gcc':
-            if self.settings.arch == 'x86':
-                cmake.definitions["CMAKE_C_FLAGS"] = "-m32"
-                cmake.definitions["CMAKE_CXX_FLAGS"] = "-m32"
-            else:
-                cmake.definitions["CMAKE_C_FLAGS"] = "-m64"
-                cmake.definitions["CMAKE_CXX_FLAGS"] = "-m64"
+        #if self.settings.compiler == 'gcc':
+        #    if self.settings.arch == 'x86':
+        #        cmake.definitions["CMAKE_C_FLAGS"] = "-m32"
+        #        cmake.definitions["CMAKE_CXX_FLAGS"] = "-m32"
+        #    else:
+        #        cmake.definitions["CMAKE_C_FLAGS"] = "-m64"
+        #        cmake.definitions["CMAKE_CXX_FLAGS"] = "-m64"
         
         cmake.definitions["USE_SHARED_MBEDTLS_LIBRARY"] = self.options.shared
         cmake.definitions["USE_STATIC_MBEDTLS_LIBRARY"] = not self.options.shared
