@@ -1,8 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from conans import ConanFile, CMake, tools, os
 
 class MbedTLS(ConanFile):
     name = "mbedtls"
-    version = "2.6.0"
+    version = "2.6.1"
     description = "An open source, portable, easy to use, readable and flexible SSL library "
     license = "https://github.com/ARMmbed/mbedtls/blob/development/apache-2.0.txt"
     url = "https://github.com/bincrafters/conan-mbedtls"
@@ -10,35 +13,55 @@ class MbedTLS(ConanFile):
     options = {"shared": [True, False] }
     default_options = "shared=False"
     generators = "cmake"
-    
+    exports_sources = "CMakeLists.txt", "patches/library-CMakeLists.txt.patch"
+    source_url = "https://github.com/ARMmbed/mbedtls"
+
     def source(self):
-        archive_name = self.name + "-" + self.version
-        extracted_folder = self.name + "-" +archive_name
-        source_url = "https://github.com/ARMmbed/mbedtls"
-        tools.get("{0}/archive/{1}.tar.gz".format(source_url, archive_name))
-        os.rename(extracted_folder, self.name)
-        
+        archive_file = '{0}-{1}.tar.gz'.format(self.name, self.version)
+        source_file = '{0}/archive/{1}'.format(self.source_url, archive_file)
+
+        tools.download(source_file, archive_file)
+        tools.untargz(archive_file)
+
+        # in 2.6.1 there is a problem with the dir extracted,
+        # it is mbedtls-mbedtls-2.6.1 instead of mbedtls-2.6.1
+        os.rename('{0}-{0}-{1}'.format(self.name, self.version), 'sources')
+
     def build(self):
-        self.cmake = CMake(self)
-        self.cmake.verbose = True
-        self.cmake.definitions["ENABLE_TESTING"] = "Off"
 
         if self.settings.os == "Windows":
-            self.cpp_info.defines.append("MBEDTLS_PLATFORM_C")
-			
+            old_lib_cmake = os.path.join("sources", "library", "CMakeLists.txt")
+            new_lib_cmake = os.path.join("patches", "library-CMakeLists.txt.patch")
+            os.unlink(old_lib_cmake)
+            os.rename(new_lib_cmake, old_lib_cmake)
+
+
+        cmake = CMake(self)
+        cmake.verbose = True
+        cmake.definitions["ENABLE_TESTING"] = "Off"
+        cmake.definitions["ENABLE_PROGRAMS"] = "Off"
+
+        if self.settings.os == "Windows" and self.options.shared:
+            cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = "On"
+
+        if self.settings.compiler == 'Visual Studio':
+            cmake.definitions["CMAKE_C_FLAGS"] = "-DMBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf"
+            cmake.definitions["CMAKE_CXX_FLAGS"] = "-DMBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf"
+
         if self.settings.compiler == 'gcc':
             if self.settings.arch == 'x86':
-                self.cmake.definitions["CMAKE_C_FLAGS"] = "-m32"
-                self.cmake.definitions["CMAKE_CXX_FLAGS"] = "-m32"
+                cmake.definitions["CMAKE_C_FLAGS"] = "-m32"
+                cmake.definitions["CMAKE_CXX_FLAGS"] = "-m32"
             else:
-                self.cmake.definitions["CMAKE_C_FLAGS"] = "-m64"
-                self.cmake.definitions["CMAKE_CXX_FLAGS"] = "-m64"
+                cmake.definitions["CMAKE_C_FLAGS"] = "-m64"
+                cmake.definitions["CMAKE_CXX_FLAGS"] = "-m64"
         
-        self.cmake.definitions["USE_SHARED_MBEDTLS_LIBRARY"] = self.options.shared
-        self.cmake.definitions["USE_STATIC_MBEDTLS_LIBRARY"] = not self.options.shared
+        cmake.definitions["USE_SHARED_MBEDTLS_LIBRARY"] = self.options.shared
+        cmake.definitions["USE_STATIC_MBEDTLS_LIBRARY"] = not self.options.shared
 
-        self.cmake.configure(source_dir=self.name)
-        self.cmake.build()
+        cmake.configure(source_dir="..", build_dir="build")
+        cmake.build()
+        cmake.install()
         
     def package(self):   
         self.copy("*.h", dst="include", src=os.path.join(self.name, 'include'), keep_path=True)
@@ -54,6 +77,6 @@ class MbedTLS(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
-		
+
         if self.settings.os == "Windows":
-            self.cpp_info.defines.append("MBEDTLS_PLATFORM_C")
+            self.cpp_info.defines.append("MBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf")

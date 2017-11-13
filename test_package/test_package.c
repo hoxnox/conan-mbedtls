@@ -19,11 +19,7 @@
  *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
-#if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
-#else
-#include MBEDTLS_CONFIG_FILE
-#endif
 
 #include "mbedtls/entropy.h"
 #include "mbedtls/entropy_poll.h"
@@ -56,8 +52,9 @@
 
 #include <string.h>
 
-#if defined(MBEDTLS_PLATFORM_C)
+//#if defined(MBEDTLS_PLATFORM_C)
 #include "mbedtls/platform.h"
+/*
 #else
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,6 +64,8 @@
 #define MBEDTLS_EXIT_SUCCESS EXIT_SUCCESS
 #define MBEDTLS_EXIT_FAILURE EXIT_FAILURE
 #endif
+*/
+//#define mbedtls_snprintf   snprintf
 
 #if defined(MBEDTLS_MEMORY_BUFFER_ALLOC_C)
 #include "mbedtls/memory_buffer_alloc.h"

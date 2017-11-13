@@ -2,20 +2,20 @@
 
 [Conan.io](https://conan.io) package for [mbed TLS](https://tls.mbed.org/) project
 
-The packages generated with this **conanfile** can be found in [Bintray](https://bintray.com/bincrafters/public-conan/mbedTLS%3Abincrafters).
+The packages generated with this **conanfile** can be found in [Bintray](https://bintray.com/bincrafters/public-conan/mbedtls%3Abincrafters).
 
 ## For Users: Use this package
 
 ### Basic setup
 
-    $ conan install mbedTLS/2.6.0@bincrafters/stable
+    $ conan install mbedtls/2.6.1@bincrafters/stable
 
 ### Project setup
 
 If you handle multiple dependencies in your project is better to add a *conanfile.txt*
 
     [requires]
-    mbedTLS/2.6.0@bincrafters/stable
+    mbedtls/2.6.1@bincrafters/stable
 
     [generators]
     txt
@@ -44,7 +44,7 @@ This is a header only library, so nothing needs to be built.
 
 ## Upload
 
-    $ conan upload mbedTLS/2.6.0@bincrafters/stable --all -r bincrafters
+    $ conan upload mbedtls/2.6.1@bincrafters/stable --all -r bincrafters
 
 ### License
 [Apache 2.0](https://github.com/ARMmbed/mbedtls/blob/development/apache-2.0.txt)
