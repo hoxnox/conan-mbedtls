@@ -76,8 +76,8 @@ class MbedTLS(ConanFile):
         self.copy("*.lib", dst="lib", keep_path=False, symlinks=True)
 
     def package_info(self):
-        #self.cpp_info.libs = tools.collect_libs(self)
-        self.cpp_info.libs = ['mbedcrypto', 'mbedx509', 'mbedtls']
+        # the order below matters. If changed some linux builds may fail.
+        self.cpp_info.libs = [ 'mbedx509', 'mbedcrypto', 'mbedtls' ]
 
         if self.settings.os == "Windows":
             self.cpp_info.defines.append("MBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf")
