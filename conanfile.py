@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from conans import ConanFile, CMake, tools, os
+from conans import ConanFile, CMake, tools
+import os
 
 class MbedTLS(ConanFile):
     name = "mbedtls"
