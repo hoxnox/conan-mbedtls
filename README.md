@@ -1,7 +1,3 @@
- [![Download](https://api.bintray.com/packages/bincrafters/public-conan/mbedtls%3Abincrafters/images/download.svg) ](https://bintray.com/bincrafters/public-conan/mbedtls%3Abincrafters/_latestVersion)
- [![Build status](https://ci.appveyor.com/api/projects/status/ets0fae6c2fstgkc?svg=true)](https://ci.appveyor.com/project/BinCrafters/conan-mbedtls)
- [![Build Status](https://travis-ci.org/bincrafters/conan-mbedtls.svg?branch=stable%2F2.6.1)](https://travis-ci.org/bincrafters/conan-mbedtls)
-
 # This repository holds a recipe for the mbed TLS library
 
 [Conan.io](https://conan.io) package for [mbed TLS](https://tls.mbed.org/) project
@@ -34,9 +30,11 @@ Note: It is recommended that you run conan install from a build directory and no
 
 The example below shows the commands used to publish to bincrafters conan repository. To publish to your own conan respository (for example, after forking this git repository), you will need to change the commands below accordingly. 
 
-## Build and Package
+## Build  
 
-The following command both runs all the steps of the conan file, and publishes the package to the local system cache. This includes downloading dependencies from "build_requires" and "requires" , and then running the build() method.
+This is a header only library, so nothing needs to be built.
+
+## Package 
 
     $ conan create bincrafters/stable
 	
@@ -49,4 +47,4 @@ The following command both runs all the steps of the conan file, and publishes t
     $ conan upload mbedtls/2.6.1@bincrafters/stable --all -r bincrafters
 
 ### License
-[Apache 2.0](https://github.com/ARMmbed/mbedtls/blob/master/apache-2.0.txt)
+[Apache 2.0](https://github.com/ARMmbed/mbedtls/blob/development/apache-2.0.txt)
