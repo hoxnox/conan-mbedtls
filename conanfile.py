@@ -28,6 +28,9 @@ class MbedTLS(ConanFile):
         # it is mbedtls-mbedtls-2.6.1 instead of mbedtls-2.6.1
         os.rename('{0}-{0}-{1}'.format(self.name, self.version), 'sources')
 
+        cmakelist_file = os.path.join("sources", "CMakeLists.txt")
+        tools.replace_in_file(cmakelist_file, '${CMAKE_SOURCE_DIR}', '${CMAKE_SOURCE_DIR}/sources', strict=True)
+
     def build(self):
         if self.settings.os == "Windows":
             old_lib_cmake = os.path.join("sources", "library", "CMakeLists.txt")
@@ -48,18 +51,9 @@ class MbedTLS(ConanFile):
             cmake.definitions["CMAKE_C_FLAGS"] = "-DMBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf"
             cmake.definitions["CMAKE_CXX_FLAGS"] = "-DMBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf"
 
-        #if self.settings.compiler == 'gcc':
-        #    if self.settings.arch == 'x86':
-        #        cmake.definitions["CMAKE_C_FLAGS"] = "-m32"
-        #        cmake.definitions["CMAKE_CXX_FLAGS"] = "-m32"
-        #    else:
-        #        cmake.definitions["CMAKE_C_FLAGS"] = "-m64"
-        #        cmake.definitions["CMAKE_CXX_FLAGS"] = "-m64"
-        
         cmake.definitions["USE_SHARED_MBEDTLS_LIBRARY"] = self.options.shared
         cmake.definitions["USE_STATIC_MBEDTLS_LIBRARY"] = not self.options.shared
-
-        cmake.configure(build_dir="build")
+        cmake.configure(source_dir="..", build_dir="build")
         cmake.build()
         cmake.install()
         
@@ -79,5 +73,5 @@ class MbedTLS(ConanFile):
         # the order below matters. If changed some linux builds may fail.
         self.cpp_info.libs = [ 'mbedx509', 'mbedcrypto', 'mbedtls' ]
 
-        if self.settings.os == "Windows":
+        if self.settings.compiler == 'Visual Studio':
             self.cpp_info.defines.append("MBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf")
