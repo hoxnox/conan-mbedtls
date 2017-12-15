@@ -29,7 +29,6 @@ class MbedTLS(ConanFile):
         os.rename('{0}-{0}-{1}'.format(self.name, self.version), 'sources')
 
     def build(self):
-
         if self.settings.os == "Windows":
             old_lib_cmake = os.path.join("sources", "library", "CMakeLists.txt")
             new_lib_cmake = os.path.join("patches", "library-CMakeLists.txt.patch")
@@ -60,7 +59,7 @@ class MbedTLS(ConanFile):
         cmake.definitions["USE_SHARED_MBEDTLS_LIBRARY"] = self.options.shared
         cmake.definitions["USE_STATIC_MBEDTLS_LIBRARY"] = not self.options.shared
 
-        cmake.configure(source_dir="..", build_dir="build")
+        cmake.configure(build_dir="build")
         cmake.build()
         cmake.install()
         
