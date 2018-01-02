@@ -4,22 +4,24 @@
 from conans import ConanFile, CMake, tools
 import os
 
+
 class MbedTLS(ConanFile):
     name = "mbedtls"
     version = "2.6.1"
     description = "An open source, portable, easy to use, readable and flexible SSL library "
-    license = "https://github.com/ARMmbed/mbedtls/blob/development/apache-2.0.txt"
     url = "https://github.com/bincrafters/conan-mbedtls"
+    license = "Apache-2.0"
+    exports = ["LICENSE.md"]
+    generators = "cmake"
+    exports_sources = ["CMakeLists.txt", "patches/library-CMakeLists.txt.patch"]
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False] }
     default_options = "shared=False"
-    generators = "cmake"
-    exports_sources = "CMakeLists.txt", "patches/library-CMakeLists.txt.patch"
-    source_url = "https://github.com/ARMmbed/mbedtls"
 
     def source(self):
+        source_url = "https://github.com/ARMmbed/mbedtls"
         archive_file = '{0}-{1}.tar.gz'.format(self.name, self.version)
-        source_file = '{0}/archive/{1}'.format(self.source_url, archive_file)
+        source_file = '{0}/archive/{1}'.format(source_url, archive_file)
 
         tools.download(source_file, archive_file)
         tools.untargz(archive_file)
