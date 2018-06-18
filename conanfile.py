@@ -73,7 +73,7 @@ class MbedTLS(ConanFile):
 
     def package_info(self):
         # the order below matters. If changed some linux builds may fail.
-        self.cpp_info.libs = [ 'mbedx509', 'mbedcrypto', 'mbedtls' ]
+        self.cpp_info.libs = [ 'mbedtls', 'mbedx509', 'mbedcrypto' ]
 
         if self.settings.compiler == 'Visual Studio':
             self.cpp_info.defines.append("MBEDTLS_PLATFORM_SNPRINTF_MACRO=snprintf")
