@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from conans import ConanFile, CMake, tools
+from conans import ConanFile, errors, CMake, tools
 import os
+from shutil import copy
 
 
 class MbedTLS(ConanFile):
@@ -17,13 +18,40 @@ class MbedTLS(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False] }
     default_options = "shared=False"
+    retrieved_files = ()
+
+    def retrieve(self, sha256, locations, saveas):
+        vendor_dir = os.getenv("VENDOR_DIR", "~/.vendor")
+        for location in locations:
+            try:
+                if location[:4] == "http":
+                    tools.download(location, saveas)
+                elif location[:9] == "vendor://":
+                    location = '{vendor_dir}/{location}'.format(location=location[9:],
+                                                                vendor_dir=vendor_dir)
+                    copy(location, saveas)
+                else:
+                    copy(location, saveas)
+                tools.check_sha256(saveas, sha256)
+                self.retrieved_files = (self.retrieved_files, saveas)
+                break
+            except:
+                self.output.warn("Failed to retrieve " + location)
+                continue
+        if not self.retrieved_files:
+            raise errors.ConanException("Error retrieving file. All sources failed.")
+
 
     def source(self):
         source_url = "https://github.com/ARMmbed/mbedtls"
         archive_file = '{0}-{1}.tar.gz'.format(self.name, self.version)
         source_file = '{0}/archive/{1}'.format(source_url, archive_file)
 
-        tools.download(source_file, archive_file)
+        self.retrieve("d064a8a3babab9ea2ac33675cc843606dbb7a11511fed96fb70aa3189dd64519",
+                [
+                    "vendor://ARMmbed/mbedtls/{0}".format(archive_file), 
+                    source_file
+                ], archive_file)
         tools.untargz(archive_file)
 
         # in 2.6.1 there is a problem with the dir extracted,
